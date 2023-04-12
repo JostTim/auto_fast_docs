@@ -18,6 +18,11 @@ except :
     pass
 
 LOGGER = logging.getLogger()
+handler = logging.StreamHandler(sys.stdout)
+formatter = logging.Formatter(' %(levelname)-8s : %(message)s')
+handler.setFormatter(formatter)
+LOGGER.setLevel(logging.DEBUG)
+LOGGER.addHandler(handler)
 
 def unix_join(*args, **kwargs):
     return os.path.join(*args, **kwargs).replace(os.sep,'/')
@@ -369,7 +374,13 @@ def mkds_make_docfiles(path : str, top_module_name : str, docs_dir : str = "docs
     os.makedirs(docpath, exist_ok = True)
     LOGGER.info("Root package path is " + os.path.join(path,top_module_name))
     matched_py_files = find_files(os.path.join(path,top_module_name), r".*\.py$", relative = True)    
-    LOGGER.info("Matched package files are :\n" + matched_py_files)
+    LOGGER.info("Matched package files are :\n\t - " + matched_py_files.__str__()
+        .replace("'","")
+        .replace(" ","")
+        .lstrip("[")
+        .rstrip("]")
+        .replace(",","\n\t - ")
+        )
     nav_dic = {}
     
     for filepath in matched_py_files :
@@ -408,7 +419,7 @@ def mkds_make_docfiles(path : str, top_module_name : str, docs_dir : str = "docs
                 function_docfile_name = unix_join(docs_dir,*directories,func_name+'.md')
                 
                 if os.path.isfile(function_docfile_name):
-                    LOGGER.warning(f"Warning : doc file {function_docfile_name} has been overwritten")
+                    LOGGER.warning(f"doc file {function_docfile_name} has been overwritten")
                 
                 module_location = ".".join([top_module_name] + directories + [func_name])
      
@@ -419,7 +430,11 @@ def mkds_make_docfiles(path : str, top_module_name : str, docs_dir : str = "docs
 
 if __name__ == "__main__" :
     import sys
+    LOGGER.info("RUNNING AUTO-DOC.py")
     local_path = os.path.dirname(os.path.abspath(__file__))
     LOGGER.info("Local path is " + local_path)
-    top_module_name = str(sys.argv[1])
+    try :
+        top_module_name = str(sys.argv[1])
+    except IndexError:
+        raise ValueError("auto-doc.py must be called with the name of the packaged sources folder as argument.\nexample : 'python auto-doc.py Inflow'")
     mkds_make_docfiles(local_path,top_module_name)
