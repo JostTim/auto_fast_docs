@@ -345,9 +345,7 @@ def mkds_markdownfile_content(item_name : str,item_type : str ) -> str:
     return ''.join(content)
 
 def mkds_make_docfiles(path : str, top_module_name : str, docs_dir : str = "docs") -> None:
-    
-    top_module_name
-    
+        
     def _create_layer(layer, reference):
         if layer in reference.keys():
             return
@@ -369,9 +367,9 @@ def mkds_make_docfiles(path : str, top_module_name : str, docs_dir : str = "docs
 
     docpath = unix_join(path,docs_dir)
     os.makedirs(docpath, exist_ok = True)
-    print(os.path.join(path,top_module_name))
+    LOGGER.info("Root package path is " + os.path.join(path,top_module_name))
     matched_py_files = find_files(os.path.join(path,top_module_name), r".*\.py$", relative = True)    
-    print(matched_py_files)
+    LOGGER.info("Matched package files are :\n" + matched_py_files)
     nav_dic = {}
     
     for filepath in matched_py_files :
@@ -420,9 +418,8 @@ def mkds_make_docfiles(path : str, top_module_name : str, docs_dir : str = "docs
     mkds_mod_mkdocs_yml_archi(path,nav_dic)
 
 if __name__ == "__main__" :
+    import sys
     local_path = os.path.dirname(os.path.abspath(__file__))
-    print(local_path)
-    #try :
-    mkds_make_docfiles(local_path,"ResearchProjects")
-    #except Exception as e:
-        #print(e)
+    LOGGER.info("Local path is " + local_path)
+    top_module_name = str(sys.argv[1])
+    mkds_make_docfiles(local_path,top_module_name)
