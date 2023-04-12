@@ -10,10 +10,10 @@ Drop it on top level of your package. Requires wrapped package structure like so
   - :open_file_folder: docs
     - :page_facing_up: index.md
   - :open_file_folder: Package
-    - :page_facing_up: __init__.py
+    - :page_facing_up: \_\_init__.py
     - :page_facing_up: myfile.py
     - :open_file_folder: mysubpackage
-      - :page_facing_up: __init__.py
+      - :page_facing_up: \_\_init__.py
       - :page_facing_up: myfile2.py
     
 Then, inside the top wrapping folder, PackageRepo, you can call `auto-docs.py` like this :
