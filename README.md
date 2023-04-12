@@ -1,4 +1,4 @@
-# auto-doc
+# Auto-Doc
 A single file auto documentation builder made to be interfaced with mkdocstrings, and ran in containerized CI/CD
 
 Drop it on top level of your package. Requires wrapped package structure like so :
