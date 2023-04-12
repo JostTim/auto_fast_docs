@@ -9,7 +9,33 @@ import os, sys
 import logging
 import ast
 
-_EXCLUDE_BALISES = {"exclude_module":"EXCLUDE_MODULE_FROM_MKDOCSTRINGS","exclude_func_class":"EXCLUDE_FUNC_OR_CLASS_FROM_MKDOCSTRINGS"}
+_EXCLUDE_BALISES = {
+    "exclude_module":"EXCLUDE_MODULE_FROM_MKDOCSTRINGS",
+    "exclude_callable":"EXCLUDE_CALLABLE_FROM_MKDOCSTRINGS",
+    }
+
+#Options list are available here : https://mkdocstrings.github.io/python/usage/#globallocal-options
+
+_FUNCTION_OPTIONS = """
+    handler: python
+    options:
+      show_root_heading: true
+      show_root_full_path : true
+      show_category_heading : false
+      separate_signature : true
+      heading_level : 1"""
+
+_CLASS_OPTIONS = """
+    handler: python
+    options:
+      show_root_heading: true
+      show_root_full_path : true
+      show_category_heading : true
+      show_root_members_full_path : true
+      show_if_no_docstring : true
+      merge_init_into_class : true
+      separate_signature : true
+      heading_level : 1"""
 
 import re
 try : 
@@ -210,7 +236,7 @@ class mkds_pyfile_parser(ast.NodeVisitor):
 
     def visit_FunctionDef(self, node):
         self.context.append(node.name)
-        if len(self.context) == 2 and not self.check_exclusion(node,"exclude_func_class"):
+        if len(self.context) == 2 and not self.check_exclusion(node,"exclude_callable"):
             #len(context) == 2 when we are inside module, and function. If we are inside module, class, function , we are == 3. And we don't want to register class functions.
             self.content["functions"].append(self.aggreg_context())
         self.generic_visit(node)
@@ -221,7 +247,7 @@ class mkds_pyfile_parser(ast.NodeVisitor):
 
     def visit_ClassDef(self, node):
         self.context.append(node.name)
-        if not self.check_exclusion(node,"exclude_func_class"):
+        if not self.check_exclusion(node,"exclude_callable"):
             self.content["classes"].append(self.aggreg_context())
         self.generic_visit(node)
         self.context.pop()
@@ -325,27 +351,13 @@ def mkds_mod_mkdocs_yml_archi(path : str,appendings : dict) -> None:
 
 def mkds_markdownfile_content(item_name : str,item_type : str ) -> str:
     content = []
-    content.append("# \n")
-    content.append("::: ")
-    content.append(item_name + "\n")
+    content.append("::: "+item_name)
 
     if item_type == "functions" :
-        content.append("""    handler: python
-    options:
-      show_root_heading: true
-      show_root_full_path : false
-      show_category_heading : false
-      heading_level : 1""")
+        content.append(_FUNCTION_OPTIONS)
 
     if item_type == "classes" :
-        content.append("""    handler: python
-    options:
-      show_root_heading: true
-      show_root_full_path : false
-      show_category_heading : true
-      show_root_members_full_path : true
-      show_if_no_docstring : false
-      heading_level : 1""")
+        content.append(_CLASS_OPTIONS)
 
     return ''.join(content)
 
