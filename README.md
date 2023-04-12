@@ -3,18 +3,18 @@ A single file auto documentation builder made to be interfaced with mkdocstrings
 
 Drop it on top level of your package. Requires wrapped package structure like so :
 
-- :: PackageRepo
-  - /Package
-    - __init__.py
-    - myfile.py
-    - /mysubpackage
-      - __init__.py
-      - myfile2.py
-  - setup.py
-  - auto-doc.py
-  - mkdocs.yml
-  - /docs
-    - index.md
+- :open_file_folder: PackageRepo
+  - :open_file_folder: Package
+    - :page_facing_up: __init__.py
+    - :page_facing_up: myfile.py
+    - :open_file_folder: mysubpackage
+      - :page_facing_up: __init__.py
+      - :page_facing_up: myfile2.py
+  - :page_facing_up: setup.py
+  - :page_facing_up: auto-doc.py
+  - :page_facing_up: mkdocs.yml
+  - :open_file_folder: docs
+    - :page_facing_up: index.md
     
 Then, inside the top wrapping folder, PackageRepo, you can call `auto-docs.py` like this :
 ```
