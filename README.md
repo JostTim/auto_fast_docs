@@ -1,7 +1,8 @@
 # Auto-Doc
 A single file auto documentation builder made to be interfaced with mkdocstrings, and ran in containerized CI/CD
 
-Drop it on top level of your package. Requires wrapped package structure like so :
+Drop it on top level of your package wrapper folder.
+It requires a setup.py wrapped package structure like so :
 
 > - :open_file_folder: PackageRepo
 >   - :page_facing_up: setup.py
@@ -17,7 +18,7 @@ Drop it on top level of your package. Requires wrapped package structure like so
 >       - :page_facing_up: myfile2.py
     
 Then, inside the top wrapping folder, PackageRepo, you can call `auto-docs.py` like this :
-```
+```bash
 python auto-docs.py Package
 ```
 It requires a single command line argument that tells it what is the folder that contains the python source files in your wrapping folder.   
