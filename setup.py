@@ -26,7 +26,7 @@ setup(name='auto_doc',
         'Programming Language :: Python :: 3.10',
         ],
       entry_points={
-        'console_scripts': ['auto-doc= auto_doc:console_mkds_make_docfiles'],
+        'console_scripts': ['auto_doc= auto_doc:console_mkds_make_docfiles'],
        },
       scripts={},
      )
