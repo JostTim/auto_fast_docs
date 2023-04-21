@@ -5,7 +5,7 @@ from setuptools import setup, find_packages
 here = os.path.abspath(os.path.dirname(__file__))
 README = open(os.path.join(here, 'README.md')).read()
 
-setup(name='auto-doc',
+setup(name='auto_doc',
       version='1.0.0',
       description='',
       long_description=README,
@@ -26,7 +26,7 @@ setup(name='auto-doc',
         'Programming Language :: Python :: 3.10',
         ],
       entry_points={
-        'console_scripts': ['auto-doc= auto_doc:console_mkds_make_docfiles'],
+        'console_scripts': ['auto_doc= auto_doc:console_mkds_make_docfiles'],
        },
       scripts={},
      )
