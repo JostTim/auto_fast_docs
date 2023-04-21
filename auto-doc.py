@@ -20,7 +20,8 @@ _FUNCTION_OPTIONS = """
     handler: python
     options:
       show_root_heading: true
-      show_root_full_path : true
+      show_root_full_path : false
+      show_object_full_path : true
       show_category_heading : false
       separate_signature : true
       heading_level : 1"""
@@ -29,9 +30,10 @@ _CLASS_OPTIONS = """
     handler: python
     options:
       show_root_heading: true
-      show_root_full_path : true
+      show_root_full_path : false
+      show_root_members_full_path : false
+      show_object_full_path : true
       show_category_heading : true
-      show_root_members_full_path : true
       show_if_no_docstring : true
       merge_init_into_class : true
       separate_signature : true
@@ -440,7 +442,7 @@ def mkds_make_docfiles(path : str, top_module_name : str, docs_dir : str = "docs
 
     mkds_mod_mkdocs_yml_archi(path,nav_dic)
 
-if __name__ == "__main__" :
+def console_mkds_make_docfiles():
     import sys
     LOGGER.info("RUNNING AUTO-DOC.py")
     local_path = os.path.dirname(os.path.abspath(__file__))
@@ -450,3 +452,6 @@ if __name__ == "__main__" :
     except IndexError:
         raise ValueError("auto-doc.py must be called with the name of the packaged sources folder as argument.\nexample : 'python auto-doc.py Inflow'")
     mkds_make_docfiles(local_path,top_module_name)
+    
+if __name__ == "__main__" :
+    console_mkds_make_docfiles()
