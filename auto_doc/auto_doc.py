@@ -445,12 +445,19 @@ def mkds_make_docfiles(path : str, top_module_name : str, docs_dir : str = "docs
 def console_mkds_make_docfiles():
     import sys
     LOGGER.info("RUNNING AUTO-DOC.py")
-    local_path = os.path.dirname(os.path.abspath(__file__))
-    LOGGER.info("Local path is " + local_path)
     try :
         top_module_name = str(sys.argv[1])
     except IndexError:
         raise ValueError("auto-doc.py must be called with the name of the packaged sources folder as argument.\nexample : 'python auto-doc.py Inflow'")
+    try :
+        temp = str(sys.argv[2])
+        local_path = top_module_name
+        top_module_name = temp
+    except IndexError:
+        local_path = os.path.dirname(os.path.abspath(__file__))
+        LOGGER.warning("No second argument was supplied. The localpath was determined relatively to auto-dof.py This may not yield the desired effect")
+    LOGGER.info("Local path is " + local_path)
+    
     mkds_make_docfiles(local_path,top_module_name)
     
 if __name__ == "__main__" :
