@@ -203,6 +203,7 @@ class RepositoryConfigurator:
         LOGGER.info("Building with auto-doc :")
 
         # create and fill the .md files
+        self.create_index()
         nav_dic = self.make_markdown_files()
 
         doc_files_digest = ", \n - ".join(
@@ -280,11 +281,29 @@ class RepositoryConfigurator:
     def update_doc_path(self):
         self.docpath = os.path.join(self.cwd, "docs")
         os.makedirs(self.docpath, exist_ok=True)
+
+    def create_index(self):
         index_file_path = os.path.join(self.docpath, "index.md")
-        if not os.path.isfile(index_file_path):
-            with open(index_file_path, "w") as f:
-                f.write(f"# {self.package_name}\n\n")
-                f.write(f"{self.package_name} source code documentation.\n")
+        if os.path.isfile(index_file_path):
+            return
+
+        content = ""
+
+        readme_file_paths = [os.path.join(self.cwd, suffix) for suffix in [
+            "README.md", "readme.md"]]
+        for readme_file_path in readme_file_paths:
+            if os.path.isfile(readme_file_path):
+                with open(readme_file_path, "r") as f:
+                    content = f.read()
+                LOGGER.info(
+                    f"created an index.md file from the {readme_file_path} file")
+                break
+
+        if content == "":
+            content = f"# {self.package_name}\n\n**{self.package_name}** codebase documentation.\n"
+
+        with open(index_file_path, "w") as f:
+            f.write(content)
 
     def update_static_doc_url(self):
         if self.username is None:
@@ -533,11 +552,6 @@ parser.add_argument('-g',
                     help="Groups (on gitlab) or organisation (on hithub) on wich the repo is located. "
                     "Use / to separate groups if multiple are present (gitlab only)"
                     )
-parser.add_argument('-t',
-                    "--token",
-                    default="",
-                    help="github or gitlab token"
-                    )
 
 
 def console_mkds_make_docfiles():
@@ -557,8 +571,8 @@ def console_mkds_make_docfiles():
 
     if "github" in args.platform:
         command = "mkdocs gh-deploy --force"
-        if args.token:
-            command += f"--remote-name https://{args.token}@github.com/{args.username}/{args.package_name}.git"
+        # if args.token:
+        #     command += f"--remote-name https://{args.token}@github.com/{args.username}/{args.package_name}.git"
         subprocess.run(command, shell=True)
     elif "gitlab" in args.platform:
         command = "mkdocs build --site-dir public"
