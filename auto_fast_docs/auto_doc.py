@@ -537,7 +537,12 @@ def console_mkds_make_docfiles():
 
     LOGGER.info("Running mkdocs build")
 
-    subprocess.run("mkdocs build --verbose", shell=True)
+    if "github" in args.platform:
+        subprocess.run("mkdocs gh-deploy --force", shell=True)
+    elif "gitlab" in args.platform:
+        subprocess.run("mkdocs build --site-dir public", shell=True)
+    else:
+        raise ValueError("Must be gitlab or github")
 
 
 if __name__ == "__main__":
