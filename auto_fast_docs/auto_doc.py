@@ -205,9 +205,9 @@ class RepositoryConfigurator:
         # create and fill the .md files
         nav_dic = self.make_markdown_files()
 
-        doc_files_digest = ", \n\t- ".join(
+        doc_files_digest = ", \n - ".join(
             find_files(self.docpath, r".*\.md$", relative=True))
-        LOGGER.info(f"created markdown files :\n\t- {doc_files_digest}")
+        LOGGER.info(f"created markdown files :\n\n - {doc_files_digest}")
 
         # create and fill the mkocs.yml file with the nav corresponding to files above
         mkd_conf = MkdocsConfigurator(os.path.join(self.cwd, "mkdocs.yml"))
@@ -215,7 +215,7 @@ class RepositoryConfigurator:
         mkd_conf.write_mkdocs_nav(nav_dic)
 
         LOGGER.info(
-            f"final mkdocs.yml config is :{''.join(mkd_conf.current_content())}")
+            f"final mkdocs.yml config is :\n\n{''.join(mkd_conf.current_content())}")
 
     def set_cwd(self, path):
         self.cwd = path
@@ -475,7 +475,7 @@ class MkdocsConfigurator:
             return
 
         LOGGER.info(
-            "No mkdocs file is present in package. Auto generating one")
+            "No mkdocs.yml file has been found in the package. Auto generating one")
         self.add_line(f"site_name: {repository_conf.package_name}")
         if repository_conf.username is not None:
             self.add_line(f"site_author: '{repository_conf.username}'")
