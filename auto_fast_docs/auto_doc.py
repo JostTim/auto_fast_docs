@@ -529,12 +529,13 @@ def console_mkds_make_docfiles():
         see argparse.ArgumentParser.
         This function is not meant to be called internally in python but through CLI.
     """
-    LOGGER.info("RUNNING AUTO-DOC.py")
-
     args = parser.parse_args()
+    LOGGER.info("Running auto_fast_docs")
 
     configurator = RepositoryConfigurator(args)
     configurator.run()
+
+    LOGGER.info("Running mkdocs build")
 
     subprocess.run("mkdocs build --verbose")
 
