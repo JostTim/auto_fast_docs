@@ -23,7 +23,7 @@ repository = "https://github.com/JostTim/auto-doc/"
 documentation = "https://github.com/JostTim/auto-doc/"
 
 [project.scripts]
-hello-world = "auto_fast_docs:console_mkds_make_docfiles"
+auto_fast_docs = "auto_fast_docs:console_mkds_make_docfiles"
 
 [tool.setuptools.dynamic]
 version = { attr = "auto_fast_docs.__version__" }
