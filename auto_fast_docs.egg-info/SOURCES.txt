@@ -1,0 +1,11 @@
+README.md
+pyproject.toml
+auto_fast_docs/__init__.py
+auto_fast_docs/auto_doc.py
+auto_fast_docs/discover.py
+auto_fast_docs/mkdocs_template.yml
+auto_fast_docs.egg-info/PKG-INFO
+auto_fast_docs.egg-info/SOURCES.txt
+auto_fast_docs.egg-info/dependency_links.txt
+auto_fast_docs.egg-info/requires.txt
+auto_fast_docs.egg-info/top_level.txt

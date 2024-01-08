@@ -1,0 +1,45 @@
+Metadata-Version: 2.1
+Name: auto_fast_docs
+Version: 2.0.1
+Summary: Automatic code documentation generation tool (to generate markdown files compatible with mkdocstrings)
+Author-email: Timothé Jost-Mousseau <timothe.jost-mousseau@pasteur.fr>
+Maintainer-email: Timothé Jost-Mousseau <timothe.jost-mousseau@pasteur.fr>
+License: MIT
+Project-URL: homepage, https://github.com/JostTim/auto-doc/
+Project-URL: repository, https://github.com/JostTim/auto-doc/
+Project-URL: documentation, https://github.com/JostTim/auto-doc/
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+Requires-Dist: setuptools>=66.0
+Requires-Dist: natsort
+Requires-Dist: mkdocs
+Requires-Dist: mkdocs-material
+Requires-Dist: mkdocstrings
+Requires-Dist: mkdocstrings-python
+
+# Auto-Doc
+A single file auto documentation builder made to be interfaced with mkdocstrings, and ran in containerized CI/CD
+
+Drop it on top level of your package wrapper folder.
+It requires a setup.py wrapped package structure like so :
+
+> - :open_file_folder: PackageRepo
+>   - :page_facing_up: setup.py
+>   - :page_facing_up: auto-doc.py
+>   - :page_facing_up: mkdocs.yml
+>   - :open_file_folder: docs
+>     - :page_facing_up: index.md
+>   - :open_file_folder: Package
+>     - :page_facing_up: \_\_init__.py
+>     - :page_facing_up: myfile.py
+>     - :open_file_folder: mysubpackage
+>       - :page_facing_up: \_\_init__.py
+>       - :page_facing_up: myfile2.py
+    
+Then, inside the top wrapping folder, PackageRepo, you can call `auto-docs.py` like this :
+```bash
+python auto-docs.py Package
+```
+It requires a single command line argument that tells it what is the folder that contains the python source files in your wrapping folder.   
+
+That's all !
