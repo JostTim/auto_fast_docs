@@ -15,7 +15,7 @@ from sys import stdout
 from datetime import datetime
 from typing import Any
 
-from . discover import find_python_files
+from . discover import find_python_files, find_files
 
 _EXCLUDE_BALISES = {
     "exclude_module": "EXCLUDE_MODULE_FROM_MKDOCSTRINGS",
@@ -179,19 +179,6 @@ class PyfileParser(ast.NodeVisitor):
             return super().visit(generic_arg)
 
 
-def mkds_markdownfile_content(item_name: str, item_type: str) -> str:
-    content = []
-    content.append("::: " + item_name)
-
-    if item_type == "functions":
-        content.append(_FUNCTION_OPTIONS)
-
-    if item_type == "classes":
-        content.append(_CLASS_OPTIONS)
-
-    return ''.join(content)
-
-
 class RepositoryConfigurator:
 
     def __init__(self, args):
@@ -214,9 +201,21 @@ class RepositoryConfigurator:
 
     def run(self):
         LOGGER.info("Building with auto-doc :")
-        self.auto_configure_mkdocs()
+
+        # create and fill the .md files
         nav_dic = self.make_markdown_files()
-        self.write_mkdocs_nav(nav_dic)
+
+        doc_files_digest = ", \n\t- ".join(
+            find_files(self.docpath, r".*\.md$", relative=True))
+        LOGGER.info(f"created markdown files :\n\t- {doc_files_digest}")
+
+        # create and fill the mkocs.yml file with the nav corresponding to files above
+        mkd_conf = MkdocsConfigurator(os.path.join(self.cwd, "mkdocs.yml"))
+        mkd_conf.auto_config(self)
+        mkd_conf.write_mkdocs_nav(nav_dic)
+
+        LOGGER.info(
+            f"final mkdocs.yml config is :{''.join(mkd_conf.current_content())}")
 
     def set_cwd(self, path):
         self.cwd = path
@@ -319,67 +318,6 @@ class RepositoryConfigurator:
         # "https://haisslab.pages.pasteur.fr/analysis-packages/Inflow/"
         # "https://josttim.pages.pasteur.fr/analysis-packages/Inflow/"
 
-    def auto_configure_mkdocs(self):
-        mkd_conf = MkdocsConfigurator(os.path.join(self.cwd, "mkdocs.yml"))
-        if mkd_conf.skip_config():
-            return
-
-        LOGGER.info(
-            "No mkdocs file is present in package. Auto generating one")
-        mkd_conf.add_line(f"site_name: {self.package_name}")
-        if self.username is not None:
-            mkd_conf.add_line(f"site_author: '{self.username}'")
-            mkd_conf.add_line(
-                f"copyright: '{datetime.now().strftime('%Y')} - {self.username}'")
-        if self.static_doc_url is not None:
-            mkd_conf.add_line(f"site_url: '{self.static_doc_url}'")
-        if self.package_url is not None:
-            mkd_conf.add_line(f"repo_url: '{self.package_url}'")
-
-        mkd_conf.add_lines_from_template()
-        mkd_conf.write_file()
-
-    def write_mkdocs_nav(self, nav_dic: dict) -> None:
-        def _entry_level(level: int, entry_name: str, entry_value: str | None = None) -> str:
-            line = "    " * (level + 1) + "- "
-            # add quotes
-            line += _quoting(entry_name) if entry_value is not None else entry_name
-            line += ": "
-            if entry_value is not None:
-                line += _quoting(entry_value)
-            return line + _eol()
-
-        def _quoting(name: str) -> str:
-            return "'" + name + "'"
-
-        def _eol() -> str:
-            return "\n"
-
-        def recursive_writer(dico, depth):
-            nonlocal fo
-            for key, value in dico.items():
-                if hasattr(value, "items"):
-                    line = _entry_level(depth, key)
-                    fo.write(line)
-                    recursive_writer(value, depth + 1)
-                else:
-                    line = _entry_level(depth, key, value)
-                    fo.write(line)
-
-        filepath = os.path.join(self.cwd, "mkdocs.yml")
-        original_content = []
-
-        with open(filepath, "r") as fi:
-            for line in fi.readlines():
-                original_content.append(line)
-                if "-home:index.md" in line.lower().replace(" ", ""):
-                    break
-
-        with open(filepath, "w") as fo:
-            for line in original_content:
-                fo.write(line)
-            recursive_writer(nav_dic, depth=0)
-
     def make_markdown_files(self):
 
         def _create_layer(layer, reference):
@@ -454,10 +392,22 @@ class RepositoryConfigurator:
                         [self.package_name] + directories + [func_name])
 
                     with open(function_docfile_name, "w") as mof:
-                        mof.write(mkds_markdownfile_content(
+                        mof.write(self.get_mkdocstrings_file_content(
                             module_location, func_type))
 
         return nav_dic
+
+    def get_mkdocstrings_file_content(self, item_name: str, item_type: str) -> str:
+        content = []
+        content.append("::: " + item_name)
+
+        if item_type == "functions":
+            content.append(_FUNCTION_OPTIONS)
+
+        if item_type == "classes":
+            content.append(_CLASS_OPTIONS)
+
+        return ''.join(content)
 
 
 @dataclass
@@ -476,7 +426,7 @@ class MkdocsConfigurator:
 
         self.content += (content + "\n")
 
-    def skip_config(self) -> bool:
+    def config_exists(self) -> bool:
         if os.path.isfile(self.file_path):
             return True
         return False
@@ -484,6 +434,69 @@ class MkdocsConfigurator:
     def write_file(self):
         with open(self.file_path, 'w') as f:
             f.write(self.content)
+
+    def write_mkdocs_nav(self, nav_dic: dict) -> None:
+        def _entry_level(level: int, entry_name: str, entry_value: str | None = None) -> str:
+            line = "    " * (level + 1) + "- "
+            # add quotes
+            line += _quoting(entry_name) if entry_value is not None else entry_name
+            line += ": "
+            if entry_value is not None:
+                line += _quoting(entry_value)
+            return line + _eol()
+
+        def _quoting(name: str) -> str:
+            return "'" + name + "'"
+
+        def _eol() -> str:
+            return "\n"
+
+        def recursive_writer(dico, depth):
+            nonlocal fo
+            for key, value in dico.items():
+                if hasattr(value, "items"):
+                    line = _entry_level(depth, key)
+                    fo.write(line)
+                    recursive_writer(value, depth + 1)
+                else:
+                    line = _entry_level(depth, key, value)
+                    fo.write(line)
+
+        original_content = self.current_content(with_nav=False)
+        with open(self.file_path, "w") as fo:
+            for line in original_content:
+                fo.write(line)
+            # always start the nav with index.md as home
+            fo.write("    - Home: index.md")
+            recursive_writer(nav_dic, depth=0)
+
+    def auto_config(self, repository_conf: RepositoryConfigurator):
+        if self.config_exists():
+            return
+
+        LOGGER.info(
+            "No mkdocs file is present in package. Auto generating one")
+        self.add_line(f"site_name: {repository_conf.package_name}")
+        if repository_conf.username is not None:
+            self.add_line(f"site_author: '{repository_conf.username}'")
+            self.add_line(
+                f"copyright: '{datetime.now().strftime('%Y')} - {repository_conf.username}'")
+        if repository_conf.static_doc_url is not None:
+            self.add_line(f"site_url: '{repository_conf.static_doc_url}'")
+        if repository_conf.package_url is not None:
+            self.add_line(f"repo_url: '{repository_conf.package_url}'")
+
+        self.add_lines_from_template()
+        self.write_file()
+
+    def current_content(self, with_nav=True) -> list:
+        original_content = []
+        with open(self.file_path, "r") as fi:
+            for line in fi.readlines():
+                original_content.append(line)
+                if "nav :" == line.lower().replace(" ", "") and not with_nav:
+                    return original_content
+        return original_content
 
 
 parser = argparse.ArgumentParser(
