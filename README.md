@@ -1,4 +1,5 @@
-[![Upload Python Package](https://github.com/JostTim/auto_fast_docs/actions/workflows/python-publish.yml/badge.svg)](https://github.com/JostTim/auto_fast_docs/actions/workflows/python-publish.yml)
+[![Upload Python Package](https://github.com/JostTim/auto_fast_docs/actions/workflows/python-publish.yml/badge.svg?branch=main)](https://github.com/JostTim/auto_fast_docs/actions/workflows/python-publish.yml)
+[![Deploy](https://github.com/JostTim/auto_fast_docs/actions/workflows/ci-cd.yml/badge.svg?branch=main)](https://github.com/JostTim/auto_fast_docs/actions/workflows/ci-cd.yml)
 
 # Auto-Doc
 A single file auto documentation builder made to be interfaced with mkdocstrings, and ran in containerized CI/CD
@@ -26,3 +27,5 @@ python auto-docs.py Package
 It requires a single command line argument that tells it what is the folder that contains the python source files in your wrapping folder.   
 
 That's all !
+
+[Here is an example of the result](https://josttim.github.io/auto_fast_docs/) (and also a documentation for this repo's code)
