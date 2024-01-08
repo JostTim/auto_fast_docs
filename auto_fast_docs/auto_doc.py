@@ -537,7 +537,7 @@ def console_mkds_make_docfiles():
 
     LOGGER.info("Running mkdocs build")
 
-    subprocess.run("mkdocs build --verbose")
+    subprocess.run("mkdocs build --verbose", shell=True)
 
 
 if __name__ == "__main__":
