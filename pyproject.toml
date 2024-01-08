@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools >= 66.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "auto_doc"
+authors = [
+    { name = "Timothé Jost-Mousseau", email = "timothe.jost-mousseau@pasteur.fr" },
+]
+maintainers = [
+    { name = "Timothé Jost-Mousseau", email = "timothe.jost-mousseau@pasteur.fr" },
+]
+description = "Automatic code documentation generation tool (to generate markdown files compatible with mkdocstrings)"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+dynamic = ["version"]
+dependencies = ["setuptools >= 66.0", "natsort", "mkdocs", "mkdocs-material", "mkdocstrings", "mkdocstrings-python"]
+
+[project.urls]
+homepage = "https://github.com/JostTim/auto-doc/"
+repository = "https://github.com/JostTim/auto-doc/"
+documentation = "https://github.com/JostTim/auto-doc/"
+
+[tool.setuptools.dynamic]
+version = { attr = "auto_doc.__version__" }
+
+[tool.setuptools.package-data]
+auto_doc = ["mkdocs_template.yml"]

@@ -1,0 +1,11 @@
+README.md
+pyproject.toml
+auto_doc/__init__.py
+auto_doc/auto_doc.py
+auto_doc/discover.py
+auto_doc/mkdocs_template.yml
+auto_doc.egg-info/PKG-INFO
+auto_doc.egg-info/SOURCES.txt
+auto_doc.egg-info/dependency_links.txt
+auto_doc.egg-info/requires.txt
+auto_doc.egg-info/top_level.txt
