@@ -520,6 +520,11 @@ parser.add_argument('-g',
                     help="Groups (on gitlab) or organisation (on hithub) on wich the repo is located. "
                     "Use / to separate groups if multiple are present (gitlab only)"
                     )
+parser.add_argument('-t',
+                    "--token",
+                    default="",
+                    help="github or gitlab token"
+                    )
 
 
 def console_mkds_make_docfiles():
@@ -538,7 +543,10 @@ def console_mkds_make_docfiles():
     LOGGER.info("Running mkdocs build")
 
     if "github" in args.platform:
-        subprocess.run("mkdocs gh-deploy --force", shell=True)
+        subprocess.run(
+            f"mkdocs gh-deploy --force "
+            f"--remote-name https://{args.token}@github.com/{configurator.username}/{configurator.package_name}.git",
+            shell=True)
     elif "gitlab" in args.platform:
         subprocess.run("mkdocs build --site-dir public", shell=True)
     else:
