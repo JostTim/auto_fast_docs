@@ -18,9 +18,9 @@ dynamic = ["version"]
 dependencies = ["setuptools >= 66.0", "natsort", "mkdocs", "mkdocs-material", "mkdocstrings", "mkdocstrings-python"]
 
 [project.urls]
-homepage = "https://github.com/JostTim/auto-doc/"
+homepage = "https://pypi.org/project/auto-fast-docs/"
 repository = "https://github.com/JostTim/auto-doc/"
-documentation = "https://github.com/JostTim/auto-doc/"
+documentation = "https://josttim.github.io/auto_fast_docs/"
 
 [project.scripts]
 auto_fast_docs = "auto_fast_docs:console_mkds_make_docfiles"
