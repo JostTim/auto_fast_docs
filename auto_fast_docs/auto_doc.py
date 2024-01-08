@@ -543,12 +543,13 @@ def console_mkds_make_docfiles():
     LOGGER.info("Running mkdocs build")
 
     if "github" in args.platform:
-        subprocess.run(
-            f"mkdocs gh-deploy --force "
-            f"--remote-name https://{args.token}@github.com/{configurator.username}/{configurator.package_name}.git",
-            shell=True)
+        command = "mkdocs gh-deploy --force"
+        if args.token:
+            command += f"--remote-name https://{args.token}@github.com/{args.username}/{args.package_name}.git"
+        subprocess.run(command, shell=True)
     elif "gitlab" in args.platform:
-        subprocess.run("mkdocs build --site-dir public", shell=True)
+        command = "mkdocs build --site-dir public"
+        subprocess.run(command, shell=True)
     else:
         raise ValueError("Must be gitlab or github")
 
