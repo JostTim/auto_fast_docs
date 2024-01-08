@@ -1,3 +1,5 @@
+[![Upload Python Package](https://github.com/JostTim/auto_fast_docs/actions/workflows/python-publish.yml/badge.svg)](https://github.com/JostTim/auto_fast_docs/actions/workflows/python-publish.yml)
+
 # Auto-Doc
 A single file auto documentation builder made to be interfaced with mkdocstrings, and ran in containerized CI/CD
 
