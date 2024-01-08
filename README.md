@@ -69,7 +69,7 @@ The flat layout structure is standardized like this :
 
 > - :open_file_folder: PackageRepo
 >   - :page_facing_up: setup.py
->   - :page_facing_up: auto-doc.py
+>   - :page_facing_up: pyproject.toml
 >   - :page_facing_up: mkdocs.yml
 >   - :open_file_folder: docs
 >     - :page_facing_up: index.md
@@ -84,7 +84,7 @@ While the src layout is standardized like this :
 
 > - :open_file_folder: PackageRepo
 >   - :page_facing_up: setup.py
->   - :page_facing_up: auto-doc.py
+>   - :page_facing_up: pyproject.toml
 >   - :page_facing_up: mkdocs.yml
 >   - :open_file_folder: docs
 >     - :page_facing_up: index.md
@@ -95,6 +95,10 @@ While the src layout is standardized like this :
 >       - :open_file_folder: mysubpackage
 >         - :page_facing_up: \_\_init__.py
 >         - :page_facing_up: myfile2.py
+
+Note that auto_fast_docs doesn't care about ``pyproject.toml`` or ``setup.py``, any can be used.
+Also note that the docs folder, and the mkdocs.yml file here are both also not necessary, if you supply at least the ``--username`` option (see above)  
+(and of course, if you are on github on a user hosted repo. Otherwise, see ``--platform`` and ``--groups`` options below)
 
 ### --platform
 The platform (``github`` or ``gitlab``) on wich you are building the pages into.
