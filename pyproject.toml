@@ -3,7 +3,7 @@ requires = ["setuptools >= 66.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "auto_doc"
+name = "auto_fast_docs"
 authors = [
     { name = "Timothé Jost-Mousseau", email = "timothe.jost-mousseau@pasteur.fr" },
 ]
@@ -23,7 +23,7 @@ repository = "https://github.com/JostTim/auto-doc/"
 documentation = "https://github.com/JostTim/auto-doc/"
 
 [tool.setuptools.dynamic]
-version = { attr = "auto_doc.__version__" }
+version = { attr = "auto_fast_docs.__version__" }
 
 [tool.setuptools.package-data]
-auto_doc = ["mkdocs_template.yml"]
+auto_fast_docs = ["mkdocs_template.yml"]

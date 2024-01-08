@@ -12,10 +12,10 @@ jobs:
     steps:
       - name: Checkout 
         uses: actions/checkout@v2
+      - name: Install
+        run : pip install .
       - name: Build
-        run : >
-          pip install .
-          auto_doc --username ${{github.actor}} --layout flat
+        run : auto_doc --username ${{github.actor}} --layout flat
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
