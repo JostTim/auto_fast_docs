@@ -26,3 +26,5 @@ python auto-docs.py Package
 It requires a single command line argument that tells it what is the folder that contains the python source files in your wrapping folder.   
 
 That's all !
+
+[Here is an example of the result](https://josttim.github.io/auto_fast_docs/) (and also a documentation for this repo's code)
