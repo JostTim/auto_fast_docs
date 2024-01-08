@@ -299,7 +299,7 @@ class RepositoryConfigurator:
                     f"created an index.md file from the {readme_file_path} file")
                 break
 
-        if content == "":
+        if not content:
             content = f"# {self.package_name}\n\n**{self.package_name}** codebase documentation.\n"
 
         with open(index_file_path, "w") as f:
