@@ -16,7 +16,7 @@ jobs:
       - name: Setting_up_pip
         run : python -m pip install --upgrade pip
       - name: Install
-        run : pip install . --no-binary :all:
+        run : 'pip install . --no-binary :all:'
       - name: Build
         run : auto_fast_docs ${{github.event.repository.name}} --username ${{github.actor}} --layout flat
       - name: Deploy
