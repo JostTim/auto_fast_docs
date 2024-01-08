@@ -49,7 +49,7 @@ pip install git+https://github.com/JostTim/auto_fast_docs.git
 
 It supports a few options to simplify your dev life even more and be platform a-specific: 
 
-All options are case insensitive
+All options are case insensitive, except for the positionnal argument package_name
 
 ### --username
 Name of the user that owns the repository.
