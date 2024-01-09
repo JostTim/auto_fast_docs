@@ -1,5 +1,5 @@
 use_directory_urls: false
-docs_dir: "doc"
+docs_dir: "docs"
 site_dir: "public"
 
 plugins:
