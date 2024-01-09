@@ -32,6 +32,7 @@ theme:
     - navigation.tabs
     - navigation.instant
     - navigation.top
+    - content.code.copy
   highlightjs : true
   hljs_languages :
     - python
