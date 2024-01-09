@@ -17,8 +17,7 @@ def auto_increment(top_module_name):
 
     with open(path_to_init, "r") as f:
         init_contents = f.read()
-    match = re.search(
-        r"""__version__ *= *(?:"|')(\d+\.\d+)\.(\d+)(?:"|')""", init_contents)
+    match = re.search(r"""__version__ *= *(?:"|')(\d+\.\d+)\.(\d+)(?:"|')""", init_contents)
     if match is None:
         return
     major_minor, patch = match.groups()
