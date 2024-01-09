@@ -287,23 +287,20 @@ class RepositoryConfigurator:
         if os.path.isfile(index_file_path):
             return
 
-        content = ""
-
         readme_file_paths = [os.path.join(self.cwd, suffix) for suffix in [
             "README.md", "readme.md"]]
         for readme_file_path in readme_file_paths:
             if os.path.isfile(readme_file_path):
-                with open(readme_file_path, "r") as f:
-                    content = f.read()
+                with open(readme_file_path, "r") as fr:
+                    content = fr.read()
                 LOGGER.info(
                     f"created an index.md file from the {readme_file_path} file")
                 break
-
-        if not content:
+        else:
             content = f"# {self.package_name}\n\n**{self.package_name}** codebase documentation.\n"
 
-        with open(index_file_path, "w") as f:
-            f.write(content)
+        with open(index_file_path, "w") as fi:
+            fi.write(content)
 
     def update_static_doc_url(self):
         if self.username is None:
