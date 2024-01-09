@@ -483,7 +483,7 @@ class MkdocsConfigurator:
             for line in original_content:
                 fo.write(line)
             # always start the nav with index.md as home
-            fo.write("    - Home: index.md")
+            fo.write("    - Home: index.md\n")
             recursive_writer(nav_dic, depth=0)
 
     def auto_config(self, repository_conf: RepositoryConfigurator):
