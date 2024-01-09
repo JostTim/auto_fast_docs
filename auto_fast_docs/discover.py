@@ -52,14 +52,12 @@ def find_files(input_path, re_pattern=None, relative=False, levels=-1, get="file
         current_level -= 1
 
     if os.path.isfile(input_path):
-        raise ValueError(
-            f"Can only list files in a directory. A file was given : {input_path}")
+        raise ValueError(f"Can only list files in a directory. A file was given : {input_path}")
 
     _recursive_search(input_path)
 
     if relative:
-        output_list = [os.path.relpath(file, start=input_path)
-                       for file in output_list]
+        output_list = [os.path.relpath(file, start=input_path) for file in output_list]
     if parts == "name":
         output_list = [os.path.basename(file) for file in output_list]
     if sort:
@@ -105,7 +103,6 @@ def qregexp(regex, input_line, groupidx=None, matchid=None, case=False):
         matchid = matchid + 1
 
     for matchnum, match in enumerate(matches, start=1):
-
         if matchid is not None:
             if matchnum == matchid:
                 if groupidx is not None:

@@ -15,7 +15,7 @@ from sys import stdout
 from datetime import datetime
 from typing import Any
 
-from . discover import find_python_files, find_files
+from .discover import find_python_files, find_files
 
 _EXCLUDE_BALISES = {
     "exclude_module": "EXCLUDE_MODULE_FROM_MKDOCSTRINGS",
@@ -49,7 +49,7 @@ _CLASS_OPTIONS = """
 
 LOGGER = logging.getLogger()
 handler = logging.StreamHandler(stdout)
-formatter = logging.Formatter(' %(levelname)-8s : %(message)s')
+formatter = logging.Formatter(" %(levelname)-8s : %(message)s")
 handler.setFormatter(formatter)
 LOGGER.setLevel(logging.DEBUG)
 LOGGER.addHandler(handler)
@@ -110,7 +110,7 @@ class PyfileParser(ast.NodeVisitor):
             aggregator.append(item)
             aggregator.append(".")
         aggregator.pop()
-        agg = ''.join(aggregator)
+        agg = "".join(aggregator)
         return agg
 
     def visit_FunctionDef(self, node) -> Any:
@@ -180,7 +180,6 @@ class PyfileParser(ast.NodeVisitor):
 
 
 class RepositoryConfigurator:
-
     def __init__(self, args):
         self.set_package_name(args.package_name)
         self.set_cwd(args.current_path)
@@ -196,8 +195,7 @@ class RepositoryConfigurator:
 
         LOGGER.info(f"Working path is :{self.cwd}")
         LOGGER.info(f"Package layout style :{self.layout_type}")
-        LOGGER.info(
-            f"Package is expected to be located at :{self.package_path}")
+        LOGGER.info(f"Package is expected to be located at :{self.package_path}")
 
     def run(self):
         LOGGER.info("Building with auto-doc :")
@@ -206,8 +204,7 @@ class RepositoryConfigurator:
         self.create_index()
         nav_dic = self.make_markdown_files()
 
-        doc_files_digest = ", \n - ".join(
-            find_files(self.docpath, r".*\.md$", relative=True))
+        doc_files_digest = ", \n - ".join(find_files(self.docpath, r".*\.md$", relative=True))
         LOGGER.info(f"created markdown files :\n\n - {doc_files_digest}")
 
         # create and fill the mkocs.yml file with the nav corresponding to files above
@@ -215,8 +212,7 @@ class RepositoryConfigurator:
         mkd_conf.auto_config(self)
         mkd_conf.write_mkdocs_nav(nav_dic)
 
-        LOGGER.info(
-            f"final mkdocs.yml config is :\n\n{''.join(mkd_conf.current_content())}")
+        LOGGER.info(f"final mkdocs.yml config is :\n\n{''.join(mkd_conf.current_content())}")
 
     def set_cwd(self, path):
         self.cwd = path
@@ -242,7 +238,7 @@ class RepositoryConfigurator:
     def set_platform_groups(self, groups: str):
         groups_list = groups.split("/")
 
-        if groups_list == ['']:
+        if groups_list == [""]:
             self.platform_group = ""
             self.platform_sub_groups = []
             return
@@ -254,8 +250,7 @@ class RepositoryConfigurator:
             self.platform_sub_groups = groups_list[1:]
 
     def update_package_path(self):
-        local_path = os.path.join(
-            "src", self.package_name) if self.layout_type == "src" else self.package_name
+        local_path = os.path.join("src", self.package_name) if self.layout_type == "src" else self.package_name
         self.package_path = os.path.join(self.cwd, local_path)
 
     def update_package_url(self):
@@ -264,8 +259,7 @@ class RepositoryConfigurator:
             return
 
         if self.platform_group:
-            path = "/".join([self.platform_group] +
-                            self.platform_sub_groups + [self.package_name])
+            path = "/".join([self.platform_group] + self.platform_sub_groups + [self.package_name])
         else:
             path = "/".join([self.username] + [self.package_name])
 
@@ -287,14 +281,12 @@ class RepositoryConfigurator:
         if os.path.isfile(index_file_path):
             return
 
-        readme_file_paths = [os.path.join(self.cwd, suffix) for suffix in [
-            "README.md", "readme.md"]]
+        readme_file_paths = [os.path.join(self.cwd, suffix) for suffix in ["README.md", "readme.md"]]
         for readme_file_path in readme_file_paths:
             if os.path.isfile(readme_file_path):
                 with open(readme_file_path, "r") as fr:
                     content = fr.read()
-                LOGGER.info(
-                    f"created an index.md file from the {readme_file_path} file")
+                LOGGER.info(f"created an index.md file from the {readme_file_path} file")
                 break
         else:
             content = f"# {self.package_name}\n\n**{self.package_name}** codebase documentation.\n"
@@ -320,8 +312,7 @@ class RepositoryConfigurator:
             else:
                 suffix = f"pages.{self.git_address}"
         else:
-            raise NotImplementedError(
-                f"Value for git_platform can oly be github of gitlab. Got {self.git_platform}")
+            raise NotImplementedError(f"Value for git_platform can oly be github of gitlab. Got {self.git_platform}")
 
         path = "/".join(self.platform_sub_groups + [self.package_name])
 
@@ -335,7 +326,6 @@ class RepositoryConfigurator:
         # "https://josttim.pages.pasteur.fr/analysis-packages/Inflow/"
 
     def make_markdown_files(self):
-
         def _create_layer(layer, reference):
             if layer in reference.keys():
                 return
@@ -356,26 +346,24 @@ class RepositoryConfigurator:
             return reference
 
         matched_py_files = find_python_files(self.package_path)
-        matched_files_digest = ' ,\n\t- '.join(matched_py_files)
+        matched_files_digest = " ,\n\t- ".join(matched_py_files)
         LOGGER.info(f"Discovered python files :\n\t - {matched_files_digest}")
         LOGGER.info("Making markdown files")
 
         nav_dic = {}
         for filepath in matched_py_files:
-
             file_name = os.path.splitext(os.path.basename(filepath))[0]
             if file_name in ["auto-doc", "__init__"]:
                 continue
 
-            parser = PyfileParser(
-                os.path.join(self.package_path, filepath))
+            parser = PyfileParser(os.path.join(self.package_path, filepath))
             parser.visit()
             if parser.is_empty():
                 continue
 
             directories = os.path.dirname(filepath)
 
-            if directories == '':
+            if directories == "":
                 directories = []
             else:
                 directories = directories.split(os.sep)
@@ -391,25 +379,19 @@ class RepositoryConfigurator:
 
             for func_type in ["classes", "functions"]:
                 for func_item in parser.content[func_type]:
-
                     func_name = func_item.split(".")[1]
-                    func_markdown_file = f'{func_name}.md'
-                    nav_sublayer[func_name] = unix_join(
-                        *directories, func_markdown_file)
+                    func_markdown_file = f"{func_name}.md"
+                    nav_sublayer[func_name] = unix_join(*directories, func_markdown_file)
 
-                    function_docfile_name = unix_join(
-                        file_root_path, func_markdown_file)
+                    function_docfile_name = unix_join(file_root_path, func_markdown_file)
 
                     if os.path.isfile(function_docfile_name):
-                        LOGGER.warning(
-                            f"doc file {function_docfile_name} has been overwritten")
+                        LOGGER.warning(f"doc file {function_docfile_name} has been overwritten")
 
-                    module_location = ".".join(
-                        [self.package_name] + directories + [func_name])
+                    module_location = ".".join([self.package_name] + directories + [func_name])
 
                     with open(function_docfile_name, "w") as mof:
-                        mof.write(self.get_mkdocstrings_file_content(
-                            module_location, func_type))
+                        mof.write(self.get_mkdocstrings_file_content(module_location, func_type))
 
         return nav_dic
 
@@ -423,7 +405,7 @@ class RepositoryConfigurator:
         if item_type == "classes":
             content.append(_CLASS_OPTIONS)
 
-        return ''.join(content)
+        return "".join(content)
 
 
 @dataclass
@@ -432,15 +414,14 @@ class MkdocsConfigurator:
     content = ""
 
     def add_line(self, line):
-        self.content += (line + "\n")
+        self.content += line + "\n"
 
     def add_lines_from_template(self):
-        template_path = os.path.join(os.path.dirname(
-            __file__), "mkdocs_template.yml")
+        template_path = os.path.join(os.path.dirname(__file__), "mkdocs_template.yml")
         with open(template_path, "r") as f:
             content = f.read()
 
-        self.content += (content + "\n")
+        self.content += content + "\n"
 
     def config_exists(self) -> bool:
         if os.path.isfile(self.file_path):
@@ -448,7 +429,7 @@ class MkdocsConfigurator:
         return False
 
     def write_file(self):
-        with open(self.file_path, 'w') as f:
+        with open(self.file_path, "w") as f:
             f.write(self.content)
 
     def write_mkdocs_nav(self, nav_dic: dict) -> None:
@@ -490,13 +471,11 @@ class MkdocsConfigurator:
         if self.config_exists():
             return
 
-        LOGGER.info(
-            "No mkdocs.yml file has been found in the package. Auto generating one")
+        LOGGER.info("No mkdocs.yml file has been found in the package. Auto generating one")
         self.add_line(f"site_name: {repository_conf.package_name}")
         if repository_conf.username is not None:
             self.add_line(f"site_author: '{repository_conf.username}'")
-            self.add_line(
-                f"copyright: '{datetime.now().strftime('%Y')} - {repository_conf.username}'")
+            self.add_line(f"copyright: '{datetime.now().strftime('%Y')} - {repository_conf.username}'")
         if repository_conf.static_doc_url is not None:
             self.add_line(f"site_url: '{repository_conf.static_doc_url}'")
         if repository_conf.package_url is not None:
@@ -510,45 +489,54 @@ class MkdocsConfigurator:
         with open(self.file_path, "r") as fi:
             for line in fi.readlines():
                 original_content.append(line)
-                if "nav :" == line.lower().replace(" ", "") and not with_nav:
+                if "nav:" == line.lower().replace(" ", "") and not with_nav:
                     return original_content
         return original_content
 
 
 parser = argparse.ArgumentParser(
-    description='Automatic markdown documentation mkdocstrings formated files generator',
+    description="Automatic markdown documentation mkdocstrings formated files generator",
 )
-parser.add_argument("package_name",
-                    help="Name of the packaged sources folder")
-parser.add_argument("current_path",
-                    default=os.getcwd(),
-                    nargs="?",
-                    help="local path used througout the program to generate the doc files. by default,"
-                    "it's the current working directory")
-parser.add_argument('-l',
-                    "--layout",
-                    default="flat",
-                    help="Layout style for the source code to document, default is 'flat' and optionnal is src",
-                    )
-parser.add_argument('-u',
-                    "--username",
-                    default=None,
-                    help="Name of the user to wich the repo belongs to."
-                    "Used to automatically determine things for auto mkdocs config."
-                    )
-parser.add_argument('-p',
-                    "--platform",
-                    default="github",
-                    help="Platform on wich auto_doc is ran in CI/CD container. Supports github and gitlab, "
-                    "and is used to automatically determine the url of the published "
-                    "static documentation site homepage."
-                    )
-parser.add_argument('-g',
-                    "--groups",
-                    default="",
-                    help="Groups (on gitlab) or organisation (on hithub) on wich the repo is located. "
-                    "Use / to separate groups if multiple are present (gitlab only)"
-                    )
+parser.add_argument("package_name", help="Name of the packaged sources folder")
+parser.add_argument(
+    "current_path",
+    default=os.getcwd(),
+    nargs="?",
+    help=(
+        "local path used througout the program to generate the doc files. by default,it's the current working directory"
+    ),
+)
+parser.add_argument(
+    "-l",
+    "--layout",
+    default="flat",
+    help="Layout style for the source code to document, default is 'flat' and optionnal is src",
+)
+parser.add_argument(
+    "-u",
+    "--username",
+    default=None,
+    help="Name of the user to wich the repo belongs to.Used to automatically determine things for auto mkdocs config.",
+)
+parser.add_argument(
+    "-p",
+    "--platform",
+    default="github",
+    help=(
+        "Platform on wich auto_doc is ran in CI/CD container. Supports github and gitlab, "
+        "and is used to automatically determine the url of the published "
+        "static documentation site homepage."
+    ),
+)
+parser.add_argument(
+    "-g",
+    "--groups",
+    default="",
+    help=(
+        "Groups (on gitlab) or organisation (on hithub) on wich the repo is located. "
+        "Use / to separate groups if multiple are present (gitlab only)"
+    ),
+)
 
 
 def console_mkds_make_docfiles():
